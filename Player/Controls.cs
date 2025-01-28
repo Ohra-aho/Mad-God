@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class Controls : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class Controls : MonoBehaviour
     public float speed = 5f;
 
     public GameObject interaction_holder;
+
+    public bool immobal = false;
 
     public void OnEnable()
     {
@@ -27,12 +30,6 @@ public class Controls : MonoBehaviour
         interact.performed -= OnSpacePressed;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -41,23 +38,26 @@ public class Controls : MonoBehaviour
 
     private void FixedUpdate()
     {
-        GetComponent<Rigidbody2D>().velocity = new Vector2(move_direction.x * speed, move_direction.y * speed);
+        if(!immobal)
+        {
+            GetComponent<Rigidbody2D>().velocity = new Vector2(move_direction.x * speed, move_direction.y * speed);
 
-        if(move_direction == new Vector2(0, 1))
-        {
-            ChangeInteractionDirection(0);
-        }
-        else if (move_direction == new Vector2(1, 0))
-        {
-            ChangeInteractionDirection(1);
-        }
-        else if (move_direction == new Vector2(0, -1))
-        {
-            ChangeInteractionDirection(2);
-        }
-        else if(move_direction == new Vector2(-1, 0))
-        {
-            ChangeInteractionDirection(3);
+            if (move_direction == new Vector2(0, 1))
+            {
+                ChangeInteractionDirection(0);
+            }
+            else if (move_direction == new Vector2(1, 0))
+            {
+                ChangeInteractionDirection(1);
+            }
+            else if (move_direction == new Vector2(0, -1))
+            {
+                ChangeInteractionDirection(2);
+            }
+            else if (move_direction == new Vector2(-1, 0))
+            {
+                ChangeInteractionDirection(3);
+            }
         }
     }
 
@@ -85,6 +85,37 @@ public class Controls : MonoBehaviour
     }
     public void Interact()
     {
-        if(GetComponent<Player>().interact_target != null) Debug.Log(GetComponent<Player>().interact_target.name);
+        GameObject UI = GameObject.Find("UI");
+
+        if (GetComponent<Player>().interact_target != null)
+        {
+            immobal = true;
+            DisplayInteractInfo(
+                GetComponent<Player>().interact_target
+            );
+        }
+    }
+
+    private void DisplayInteractInfo(GameObject info)
+    {
+        GameObject UI = GameObject.Find("UI");
+        GameObject infoBox;
+
+        if (UI.transform.GetChild(0).gameObject.activeInHierarchy)
+        {
+            infoBox = UI.transform.GetChild(0).gameObject;
+            infoBox.GetComponent<InfoBox>().StopTextDisplay();
+        } else
+        {
+            UI.transform.GetChild(0).gameObject.SetActive(true);
+            infoBox = UI.transform.GetChild(0).gameObject;
+
+            infoBox.GetComponent<InfoBox>().SetText(
+                info.GetComponent<Interactable>().name,
+                info.GetComponent<Interactable>().description
+            );
+        }
+
+        
     }
 }
