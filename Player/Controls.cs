@@ -16,6 +16,8 @@ public class Controls : MonoBehaviour
 
     public bool immobal = false;
 
+    GameObject DefaultUI;
+
     public void OnEnable()
     {
         movement.Enable();
@@ -28,6 +30,11 @@ public class Controls : MonoBehaviour
         movement.Disable();
         interact.Disable();
         interact.performed -= OnSpacePressed;
+    }
+
+    private void Awake()
+    {
+        DefaultUI = GameObject.Find("Default UI");
     }
 
     // Update is called once per frame
@@ -85,7 +92,6 @@ public class Controls : MonoBehaviour
     }
     public void Interact()
     {
-        GameObject UI = GameObject.Find("UI");
 
         if (GetComponent<Player>().interact_target != null)
         {
@@ -98,21 +104,21 @@ public class Controls : MonoBehaviour
 
     private void DisplayInteractInfo(GameObject info)
     {
-        GameObject UI = GameObject.Find("UI");
         GameObject infoBox;
 
-        if (UI.transform.GetChild(0).gameObject.activeInHierarchy)
+        if (DefaultUI.transform.GetChild(0).gameObject.activeInHierarchy)
         {
-            infoBox = UI.transform.GetChild(0).gameObject;
+            infoBox = DefaultUI.transform.GetChild(0).gameObject;
             infoBox.GetComponent<InfoBox>().StopTextDisplay();
         } else
         {
-            UI.transform.GetChild(0).gameObject.SetActive(true);
-            infoBox = UI.transform.GetChild(0).gameObject;
+            DefaultUI.transform.GetChild(0).gameObject.SetActive(true);
+            infoBox = DefaultUI.transform.GetChild(0).gameObject;
 
             infoBox.GetComponent<InfoBox>().SetText(
                 info.GetComponent<Interactable>().name,
-                info.GetComponent<Interactable>().description
+                info.GetComponent<Interactable>().description,
+                info
             );
         }
 

@@ -3,28 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class InfoBox : MonoBehaviour
 {
-    //public InputAction space;
     private bool displayInProcess;
     IEnumerator textDisplay;
     string title;
     string description;
 
+    GameObject eventTrigger;
+
     Controls player;
 
-    /*public void OnEnable()
-    {
-        space.Enable();
-        space.performed += OnSpacePressed;
-    }
+    public GameObject button;
 
-    public void OnDisable()
-    {
-        space.Disable();
-        space.performed -= OnSpacePressed;
-    }*/
     private IEnumerator DisplayText(string displayTitle, string displayDescription)
     {
         displayInProcess = true;
@@ -36,20 +29,24 @@ public class InfoBox : MonoBehaviour
             transform.GetChild(1).GetComponent<TextMeshProUGUI>().text += displayDescription[i];
             yield return new WaitForSeconds(0.05f);
         }
+        ShowChoiseList();
         displayInProcess = false;
     }
 
-    // Optional: Allows changing the string dynamically
-    public void SetText(string displayTitle, string displayDescription)
+    //Displays info box and eventuallu shows event description. All further functionalities start from here
+    public void SetText(string displayTitle, string displayDescription, GameObject trigger)
     {
-
         title = displayTitle;
         description = displayDescription;
+        eventTrigger = trigger;
 
         transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "";
         transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
 
-        if(textDisplay != null) StopCoroutine(textDisplay);
+        ClearChoiseList();
+        transform.GetChild(2).gameObject.SetActive(false);
+
+        if (textDisplay != null) StopCoroutine(textDisplay);
         textDisplay = DisplayText(displayTitle, displayDescription);
         StartCoroutine(textDisplay);
     }
@@ -60,12 +57,51 @@ public class InfoBox : MonoBehaviour
         {
             StopCoroutine(textDisplay);
             transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = description;
+            ShowChoiseList();
             displayInProcess = false;
         } else
         {
             player = GameObject.Find("Player").GetComponent<Controls>();
             player.immobal = false;
+            ClearChoiseList();
+            transform.GetChild(2).gameObject.SetActive(false);
             this.gameObject.SetActive(false);
         }
+    }
+
+    public void ShowChoiseList()
+    {
+        if(eventTrigger.GetComponent<ChoiseEvent>())
+        {
+            transform.GetChild(2).gameObject.SetActive(true);
+            for (int i = 0; i < eventTrigger.GetComponent<ChoiseEvent>().events.Count; i++)
+            {
+                GameObject newButton = Instantiate(button, transform.GetChild(2));
+                newButton.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = eventTrigger.GetComponent<ChoiseEvent>().titles[i];
+                newButton.GetComponent<Button>().onClick.AddListener(eventTrigger.GetComponent<ChoiseEvent>().events[i]);
+            }
+        }
+    }
+
+    private void ClearChoiseList()
+    {
+        if(transform.GetChild(2).childCount > 0)
+        {
+            int x = transform.GetChild(2).childCount;
+            for (int i = 0; i < x; i++)
+            {
+                DestroyImmediate(transform.GetChild(2).GetChild(0).gameObject);
+            }
+        }
+    }
+
+    public void DeactivateInfoBox()
+    {
+        player = GameObject.Find("Player").GetComponent<Controls>();
+
+        player.immobal = false;
+        ClearChoiseList();
+        transform.GetChild(2).gameObject.SetActive(false);
+        this.gameObject.SetActive(false);
     }
 }
