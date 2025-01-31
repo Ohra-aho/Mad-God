@@ -18,6 +18,10 @@ public class Controls : MonoBehaviour
 
     GameObject DefaultUI;
 
+    Animator animator;
+
+    bool facing_left;
+
     public void OnEnable()
     {
         movement.Enable();
@@ -34,56 +38,71 @@ public class Controls : MonoBehaviour
 
     private void Awake()
     {
+        move_direction = new Vector2(0, -1);
         DefaultUI = GameObject.Find("Default UI");
+        animator = GetComponent<Animator>();
+        StartCoroutine(DirectiorBuffer());
     }
 
     // Update is called once per frame
     void Update()
     {
         move_direction = movement.ReadValue<Vector2>();
+        if (move_direction.x != 0)
+        {
+            facing_left = move_direction.x < 0;
+        }
+        
+        ControlAnimation(move_direction);
     }
 
     private void FixedUpdate()
     {
         if(!immobal)
         {
+            GetComponent<SpriteRenderer>().flipX = facing_left;
             GetComponent<Rigidbody2D>().velocity = new Vector2(move_direction.x * speed, move_direction.y * speed);
-
-            if (move_direction == new Vector2(0, 1))
-            {
-                ChangeInteractionDirection(0);
-            }
-            else if (move_direction == new Vector2(1, 0))
-            {
-                ChangeInteractionDirection(1);
-            }
-            else if (move_direction == new Vector2(0, -1))
-            {
-                ChangeInteractionDirection(2);
-            }
-            else if (move_direction == new Vector2(-1, 0))
-            {
-                ChangeInteractionDirection(3);
-            }
         }
     }
 
-    private void ChangeInteractionDirection(int child)
+    private IEnumerator DirectiorBuffer()
     {
-        //Deactivate all interactors
-        for(int i = 0; i < interaction_holder.transform.childCount; i++)
+        while(true)
         {
-            if (interaction_holder.transform.GetChild(i).gameObject.activeInHierarchy)
+            if(move_direction != Vector2.zero)
             {
-                interaction_holder.transform.GetChild(i).gameObject.SetActive(false);
-            }
-        }
+                //ControlAnimation(move_direction);
+                if (move_direction != Vector2.zero)
+                {
+                    animator.SetFloat("lastXvelocity", -move_direction.x);
+                    animator.SetFloat("lastYvelocity", move_direction.y);
+                }
 
-        //Activate interactor corresponing to movedirection
-        if(!interaction_holder.transform.GetChild(child).gameObject.activeInHierarchy)
-        {
-            interaction_holder.transform.GetChild(child).gameObject.SetActive(true);
+                float angle = Mathf.Atan2(move_direction.y, move_direction.x) * Mathf.Rad2Deg;
+                transform.GetChild(0).rotation = Quaternion.Euler(0, 0, angle - 90); // Adjust if sprite faces right
+            } else
+            {
+                //ControlAnimation(move_direction);
+            }
+            yield return new WaitForSeconds(0.07f);
         }
+    }
+
+    private void ControlAnimation(Vector2 direction)
+    {
+        if (direction == Vector2.zero) {
+            animator.SetBool("Moving", false);
+        }
+        else if (animator.GetBool("Moving") != true) {
+            animator.SetBool("Moving", true);
+            animator.SetFloat("xVelocity", -direction.x);
+            animator.SetFloat("yVelocity", direction.y);
+        } else
+        {
+            animator.SetFloat("xVelocity", -direction.x);
+            animator.SetFloat("yVelocity", direction.y);
+        }
+        
     }
 
     private void OnSpacePressed(InputAction.CallbackContext context)

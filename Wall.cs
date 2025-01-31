@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Wall : MonoBehaviour
 {
@@ -14,12 +15,20 @@ public class Wall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (player.transform.position.y < transform.position.y)
+        //If player is "above" sprite, show player through wall
+        if(GetComponent<SpriteRenderer>())
         {
-            GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
-        } else
+            if (player.transform.position.y < transform.position.y)
+                GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.None;
+            else
+                GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+        } else if(GetComponent<TilemapRenderer>())
         {
-            GetComponent<SpriteRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+            if (player.transform.position.y < transform.position.y)
+                GetComponent<TilemapRenderer>().maskInteraction = SpriteMaskInteraction.None;
+            else
+                GetComponent<TilemapRenderer>().maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+            
         }
     }
 }
