@@ -71,12 +71,10 @@ public class Controls : MonoBehaviour
         {
             if(move_direction != Vector2.zero)
             {
-                //ControlAnimation(move_direction);
-                if (move_direction != Vector2.zero)
-                {
-                    animator.SetFloat("lastXvelocity", -move_direction.x);
-                    animator.SetFloat("lastYvelocity", move_direction.y);
-                }
+                
+                animator.SetFloat("lastXvelocity", -move_direction.x);
+                animator.SetFloat("lastYvelocity", move_direction.y);
+                
 
                 float angle = Mathf.Atan2(move_direction.y, move_direction.x) * Mathf.Rad2Deg;
                 transform.GetChild(0).rotation = Quaternion.Euler(0, 0, angle - 90); // Adjust if sprite faces right
