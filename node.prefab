@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5180420089215392419}
   - component: {fileID: 2530351428105361852}
-  m_Layer: 0
+  - component: {fileID: 8691220769494252491}
+  m_Layer: 10
   m_Name: node
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
@@ -48,3 +49,39 @@ MonoBehaviour:
   connections: []
   gScore: 0
   hScore: 0
+  available: 1
+--- !u!58 &8691220769494252491
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7652097444899814452}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.011399269, y: 0.015198886}
+  serializedVersion: 2
+  m_Radius: 0.12382728

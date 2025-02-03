@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyPathFinding : MonoBehaviour
 {
     public PathNode target;
+    public GameObject true_target;
     AutomatedMovement moveController;
     public bool active = false;
 
@@ -12,6 +13,8 @@ public class EnemyPathFinding : MonoBehaviour
     [HideInInspector] public List<PathNode> path;
 
     bool test = false;
+
+    Vector3 targetPos;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +29,7 @@ public class EnemyPathFinding : MonoBehaviour
         moveController = GetComponent<AutomatedMovement>();
         moveController.immobal = true;
         Aggro();
-        currentNode = FindClosestNode();
+        currentNode = GetComponent<NodeBridge>().FindClosestNode();
     }
 
     // Update is called once per frame
@@ -62,52 +65,43 @@ public class EnemyPathFinding : MonoBehaviour
         }
     }
 
+
+    // Make enemy aggro and movement follow or assist this somehow
     public void CreatePath()
     {
-        if(path != null && path.Count > 0)
+        if(true_target != null)
         {
-            int x = 0;
-            target = path[x];
+            if(currentNode == null) currentNode = GetComponent<NodeBridge>().FindClosestNode();
 
-            //If in vasinity of target node, move toward the next one
-            if(Vector2.Distance(transform.position, path[x].transform.position) < 0.5f)
-            {
-                currentNode = path[x];
-                path.RemoveAt(x);
+            if (true_target.transform.position != targetPos) {
+                targetPos = true_target.transform.position;
+                target = true_target.GetComponent<NodeBridge>().FindClosestNode();
+                path.Clear();
             }
-            if(path.Count == 0)
+            if (path != null && path.Count > 0)
             {
-                target = null;
-                moveController.StopMoving();
+                int x = 0;
+                target = path[x];
+
+                //If in vasinity of target node, move toward the next one
+                if (Vector2.Distance(transform.position, path[x].transform.position) < 0.2f)
+                {
+                    currentNode = path[x];
+                    path.RemoveAt(x);
+                }
+                if (path.Count == 0)
+                {
+                    target = null;
+                    moveController.StopMoving();
+                }
+            }
+            else
+            {
+                if (target != null)
+                {
+                    path = AStarManager.instance.GeneratePath(currentNode, target);
+                }
             }
         }
-        else
-        {
-            //PathNode[] nodes = FindObjectsOfType<PathNode>();
-            if (target != null && (path == null || path.Count == 0))
-            {
-                path = AStarManager.instance.GeneratePath(currentNode, target);
-            }
-        }
-        test = true;
-    }
-
-    private PathNode FindClosestNode()
-    {
-        PathNode[] allNodes = FindObjectsOfType<PathNode>();
-
-        float shortestDist = float.MaxValue;
-        PathNode closest_node = null;
-
-        for(int i = 0; i < allNodes.Length; i++)
-        {
-            if(Vector2.Distance(transform.position, allNodes[i].transform.position) < shortestDist)
-            {
-                closest_node = allNodes[i];
-                shortestDist = Vector2.Distance(transform.position, allNodes[i].transform.position);
-            }
-        }
-
-        return closest_node;
     }
 }
