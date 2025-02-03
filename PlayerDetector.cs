@@ -8,8 +8,12 @@ public class PlayerDetector : MonoBehaviour
 
     [SerializeField] float viewRange;
     [SerializeField] int field_of_view;
+    [SerializeField] LayerMask nonLOS_blocker;
+    [SerializeField] LayerMask obstacles;
 
     bool playerDetected = false;
+
+    [HideInInspector] public GameObject player;
 
 
     private void Awake()
@@ -18,10 +22,15 @@ public class PlayerDetector : MonoBehaviour
     }
     private void Update()
     {
-        MakeFieldOfVIew();
     }
 
-    private void MakeFieldOfVIew()
+    private void FixedUpdate()
+    {
+        MakeFieldOfVIew(nonLOS_blocker, true);
+
+    }
+
+    private void MakeFieldOfVIew(LayerMask ignore, bool LOS)
     {
 
         float angleBetweenRays = 5;
@@ -43,34 +52,49 @@ public class PlayerDetector : MonoBehaviour
             Vector2 rotatedDirection2 = RotateVector(direction, -angleOffset);
 
             // Cast the rays
-            RaycastHit2D sight1 = Physics2D.Raycast(transform.position, rotatedDirection1, viewRange);
-            RaycastHit2D sight2 = Physics2D.Raycast(transform.position, rotatedDirection2, viewRange);
+            RaycastHit2D sight1 = Physics2D.Raycast(transform.position, rotatedDirection1, viewRange, ignore);
+            RaycastHit2D sight2 = Physics2D.Raycast(transform.position, rotatedDirection2, viewRange, ignore);
 
-            if(sight1.collider != null)
+            if (sight1.collider != null)
             {
-                if (sight1.collider.GetComponent<Player>())
+                if (sight1.collider.GetComponent<Player>() && LOS)
                 {
-                    entity.GetComponent<EnemyPathFinding>().player = sight1.collider.gameObject;
+                    //entity.GetComponent<EnemyPathFinding>().player = sight1.collider.gameObject;
+                    player = sight1.collider.gameObject;
                     detected = true;
+                    //break;
+                }
+                else if (!LOS)
+                {
+                    Debug.Log(sight1.collider.name);
                 }
             }
 
             if (sight2.collider != null)
             {
-                if (sight2.collider.GetComponent<Player>())
+                if (sight2.collider.GetComponent<Player>() && LOS)
                 {
-                    entity.GetComponent<EnemyPathFinding>().player = sight2.collider.gameObject;
+                    //entity.GetComponent<EnemyPathFinding>().player = sight2.collider.gameObject;
+                    player = sight2.collider.gameObject;
                     detected = true;
+                    //break;
+                }
+                else if(!LOS)
+                {
+                    Debug.Log(sight2.collider.name);
                 }
             }
 
             // Draw the rays
-            Debug.DrawRay(transform.position, rotatedDirection1 * (sight1.collider != null ? sight1.distance : viewRange), Color.green);
-            Debug.DrawRay(transform.position, rotatedDirection2 * (sight2.collider != null ? sight2.distance : viewRange), Color.green); 
+            
+            if(LOS)
+            {
+                Debug.DrawRay(transform.position, rotatedDirection1 * (sight1.collider != null ? sight1.distance : viewRange), Color.green);
+                Debug.DrawRay(transform.position, rotatedDirection2 * (sight2.collider != null ? sight2.distance : viewRange), Color.green);
+            }
+            
         }
-
-        playerDetected = detected;
-        if(playerDetected)
+        if(detected)
         {
             entity.GetComponent<EnemyPathFinding>().Aggro();
         } else

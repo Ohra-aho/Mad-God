@@ -14,14 +14,14 @@ public class AutomatedMovement : MonoBehaviour
     bool facing_left;
     private void Awake()
     {
-        move_direction = new Vector2(0, 0);
+        move_direction = new Vector2(0, 1);
         animator = GetComponent<Animator>();
         visionCone = transform.GetChild(0).gameObject;
     }
 
-    public void FaceTowards(GameObject target)
+    public void FaceTowards(PathNode target)
     {
-        if(!immobal)
+        if(!immobal && target != null)
         {
             move_direction = (target.transform.position - transform.position).normalized;
             if (move_direction.x != 0)
@@ -31,10 +31,18 @@ public class AutomatedMovement : MonoBehaviour
 
     }
 
-    public void RotateVisionCone()
+    public void RotateVisionCone(GameObject target)
     {
-        float angle = Mathf.Atan2(move_direction.y, move_direction.x) * Mathf.Rad2Deg;
-        visionCone.transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+        if(!GetComponent<EnemyPathFinding>().active)
+        {
+            float angle = Mathf.Atan2(move_direction.y, move_direction.x) * Mathf.Rad2Deg;
+            visionCone.transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+        } else
+        {
+            Vector2 target_position = (target.transform.position - transform.position).normalized;
+            float angle = Mathf.Atan2(target_position.y, target_position.x) * Mathf.Rad2Deg;
+            visionCone.transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+        }
     }
 
     public void Move()
@@ -51,6 +59,13 @@ public class AutomatedMovement : MonoBehaviour
         }
     }
 
+    public void StopMoving()
+    {
+        GetComponent<SpriteRenderer>().flipX = facing_left;
+        move_direction = Vector2.zero;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+    }
+
     private void ControlAnimation(Vector2 direction)
     {
         if (move_direction != Vector2.zero)
@@ -58,7 +73,9 @@ public class AutomatedMovement : MonoBehaviour
             animator.SetFloat("lastXvelocity", -move_direction.x);
             animator.SetFloat("lastYvelocity", move_direction.y);
 
-            RotateVisionCone();
+            RotateVisionCone(
+                transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().player
+            );
         }
         if (direction == Vector2.zero)
         {
