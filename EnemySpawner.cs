@@ -6,6 +6,8 @@ public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemy;
 
+    public bool active = true;
+
     int delay_frames = 10;
     // Start is called before the first frame update
     void Start()
@@ -19,7 +21,7 @@ public class EnemySpawner : MonoBehaviour
         if(delay_frames > -3) delay_frames--;
         if (delay_frames == 0)
         {
-            Spawn();
+            if(active) Spawn();
         }
     }
 

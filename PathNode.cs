@@ -12,6 +12,12 @@ public class PathNode : MonoBehaviour
 
     public bool available = true;
 
+    [HideInInspector] public int grid_width;
+    [HideInInspector] public int grid_height;
+
+    int delay_frames = 10;
+
+
     public float FScore()
     {
         return gScore + hScore;
@@ -19,8 +25,10 @@ public class PathNode : MonoBehaviour
 
     private void Update()
     {
-        if(!available)
+        if (delay_frames > -3) delay_frames--;
+        if (delay_frames == 0)
         {
+            Destroy(GetComponent<CircleCollider2D>());
         }
     }
 
@@ -47,11 +55,58 @@ public class PathNode : MonoBehaviour
             if (available) available = false;
             for(int i = 0; i < connections.Count; i++)
             {
+                //Above
+                if(connections[i].transform.GetSiblingIndex() == transform.GetSiblingIndex() + grid_width)
+                {
+                    connections[i].GetComponent<PathNode>().RemoveDiagonalConnections(false);
+                }
+                //Below
+                if (connections[i].transform.GetSiblingIndex() == transform.GetSiblingIndex() - grid_width)
+                {
+                    connections[i].GetComponent<PathNode>().RemoveDiagonalConnections(true);
+                }
                 connections[i].connections.Remove(this);
             }
             connections.Clear();
-            Destroy(GetComponent<CircleCollider2D>());
-
         }
+    }
+
+    private void RemoveDiagonalConnections(bool up)
+    {
+        List<PathNode> nodes_to_disconnect = new List<PathNode>();
+        if(up)
+        {
+            for(int i = 0; i < connections.Count; i++)
+            {
+                if(connections[i].transform.GetSiblingIndex() == transform.GetSiblingIndex() + grid_width + 1)
+                {
+                    nodes_to_disconnect.Add(connections[i]);
+                    connections[i].GetComponent<PathNode>().connections.Remove(this);
+                }
+
+                if (connections[i].transform.GetSiblingIndex() == transform.GetSiblingIndex() + grid_width - 1)
+                {
+                    nodes_to_disconnect.Add(connections[i]);
+                    connections[i].GetComponent<PathNode>().connections.Remove(this);
+                }
+            }
+        } else
+        {
+            for (int i = 0; i < connections.Count; i++)
+            {
+                if (connections[i].transform.GetSiblingIndex() == transform.GetSiblingIndex() - grid_width + 1)
+                {
+                    nodes_to_disconnect.Add(connections[i]);
+                    connections[i].GetComponent<PathNode>().connections.Remove(this);
+                }
+
+                if (connections[i].transform.GetSiblingIndex() == transform.GetSiblingIndex() - grid_width - 1)
+                {
+                    nodes_to_disconnect.Add(connections[i]);
+                    connections[i].GetComponent<PathNode>().connections.Remove(this);
+                }
+            }
+        }
+        connections.RemoveAll(node => nodes_to_disconnect.Contains(node));
     }
 }

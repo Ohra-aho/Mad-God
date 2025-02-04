@@ -23,9 +23,12 @@ public class NodeGrid : MonoBehaviour
             {
                 GameObject new_node = Instantiate(node, transform);
                 new_node.transform.position = new Vector2(transform.position.x + i, transform.position.y + j);
+                new_node.GetComponent<PathNode>().grid_width = width;
+                new_node.GetComponent<PathNode>().grid_height = height;
+
 
                 //Previous
-                if(i != 0)
+                if (i != 0)
                 {
                     new_node.GetComponent<PathNode>().connections.Add(
                             transform.GetChild(child_index - 1).GetComponent<PathNode>()
@@ -41,7 +44,7 @@ public class NodeGrid : MonoBehaviour
                     transform.GetChild(child_index - height).GetComponent<PathNode>().connections.Add(new_node.GetComponent<PathNode>());
 
                     //Diagonal forward
-                    /*if(i != width-1)
+                    if(i != width-1)
                     {
                         new_node.GetComponent<PathNode>().connections.Add(
                             transform.GetChild(child_index - height + 1).GetComponent<PathNode>()
@@ -56,7 +59,7 @@ public class NodeGrid : MonoBehaviour
                                 transform.GetChild(child_index - height - 1).GetComponent<PathNode>()
                             );
                         transform.GetChild(child_index - height - 1).GetComponent<PathNode>().connections.Add(new_node.GetComponent<PathNode>());
-                    }*/
+                    }
                 }
                 child_index++;
             }
