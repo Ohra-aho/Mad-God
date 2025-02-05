@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2033656428205747941}
   - component: {fileID: 7821559958927473440}
   - component: {fileID: 5103891408465700744}
+  - component: {fileID: -5542659311903562412}
   - component: {fileID: 8604079930310534059}
   - component: {fileID: 6547252680413157163}
   m_Layer: 8
@@ -141,7 +142,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   true_target: {fileID: 0}
-  active: 0
   currentNode: {fileID: 0}
   path: []
 --- !u!114 &5103891408465700744
@@ -156,6 +156,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 828e0e6d73006d74ea5175134be6f73b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5542659311903562412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 831481517856458619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73da822ab4463314f91bb56c0296f1ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target_available: 0
+  aggro: 0
+  current_state: 0
 --- !u!50 &8604079930310534059
 Rigidbody2D:
   serializedVersion: 4
@@ -334,6 +349,7 @@ MonoBehaviour:
   obstacles:
     serializedVersion: 2
     m_Bits: 247
+  target_in_sight: 0
   player: {fileID: 0}
 --- !u!60 &5363449514371889713
 PolygonCollider2D:

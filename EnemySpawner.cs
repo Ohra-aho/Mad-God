@@ -28,6 +28,5 @@ public class EnemySpawner : MonoBehaviour
     private void Spawn()
     {
         GameObject enemy1 = Instantiate(enemy, transform.position, Quaternion.identity);
-        enemy1.GetComponent<EnemyPathFinding>().true_target = GameObject.Find("Player");
     }
 }

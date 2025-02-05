@@ -12,11 +12,13 @@ public class AutomatedMovement : MonoBehaviour
     GameObject visionCone;
 
     bool facing_left;
+
     private void Awake()
     {
         move_direction = new Vector2(0, 1);
         animator = GetComponent<Animator>();
         visionCone = transform.GetChild(0).gameObject;
+        immobal = true;
     }
 
     public void FaceTowards(PathNode target)
@@ -28,12 +30,11 @@ public class AutomatedMovement : MonoBehaviour
                 facing_left = move_direction.x < 0;
         }
         ControlAnimation(move_direction);
-
     }
 
     public void RotateVisionCone(GameObject target)
     {
-        if(!GetComponent<EnemyPathFinding>().active)
+        if(!transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().target_in_sight)
         {
             float angle = Mathf.Atan2(move_direction.y, move_direction.x) * Mathf.Rad2Deg;
             visionCone.transform.rotation = Quaternion.Euler(0, 0, angle - 90);
@@ -59,8 +60,8 @@ public class AutomatedMovement : MonoBehaviour
 
     public void StopMoving()
     {
+        immobal = true;
         GetComponent<SpriteRenderer>().flipX = facing_left;
-        move_direction = Vector2.zero;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
 
@@ -81,7 +82,7 @@ public class AutomatedMovement : MonoBehaviour
                 transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().player
             );
         }
-        if (direction == Vector2.zero)
+        if (immobal)
         {
             animator.SetBool("Moving", false);
         }

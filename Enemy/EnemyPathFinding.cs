@@ -4,74 +4,46 @@ using UnityEngine;
 
 public class EnemyPathFinding : MonoBehaviour
 {
-    public PathNode target;
+    [HideInInspector] public PathNode target;
     [HideInInspector] public GameObject true_target;
     AutomatedMovement moveController;
-    public bool active = false;
 
     public PathNode currentNode;
     [HideInInspector] public List<PathNode> path;
 
 
     Vector3 targetPos;
+    [HideInInspector] public bool target_reached;
 
     private void Awake()
     {
         path = new List<PathNode>();
-
         moveController = GetComponent<AutomatedMovement>();
-        moveController.immobal = true;
-        Aggro();
         currentNode = GetComponent<NodeBridge>().FindClosestNode();
     }
 
     // Update is called once per frame
     private void Update()
     {
-        ControlPath();
     }
 
     private void FixedUpdate()
     {
-        if(path != null && path.Count > 0)
-        {
-            moveController.Move();
-        }
     }
-
-    public void Aggro()
-    {
-        if(!active)
-        {
-            active = true;
-            moveController.immobal = false;
-        }
-    }
-
-    public void DeAggro()
-    {
-        if(active)
-        {
-            active = false;
-            //moveController.immobal = true;
-        }
-    }
-
 
     // Make enemy aggro and movement follow or assist this somehow
     public void ControlPath()
     {
-        
         if(currentNode == null) currentNode = GetComponent<NodeBridge>().FindClosestNode();
         if (path != null && path.Count > 0)
         {
+            moveController.Move();
             FollowPath();
         }
         else
         {
             CreatePath();
         }
-        
     }
 
     private void FollowPath()
@@ -80,15 +52,14 @@ public class EnemyPathFinding : MonoBehaviour
         target = path[x];
         moveController.FaceTowards(target);
 
-
         //If in vasinity of target node, move toward the next one
-        if (Vector2.Distance(transform.position, path[x].transform.position) < 0.2f)
+        if (Vector2.Distance(transform.position, path[x].transform.position) < 0.3f)
         {
             currentNode = path[x];
             path.RemoveAt(x);
 
             //Target moved too far from original positon
-            if (Vector2.Distance(targetPos, true_target.transform.position) >= 2f)
+            if (Vector2.Distance(targetPos, true_target.transform.position) >= 2f && transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().target_in_sight)
             {
                 target = null;
                 path.Clear();
@@ -106,14 +77,19 @@ public class EnemyPathFinding : MonoBehaviour
 
     private void CreatePath()
     {
-        target = null;
-        path.Clear();
+        ClearPath();
 
         if(true_target != null)
         {
-            targetPos = true_target.transform.position; //Might not be nessessary
+            targetPos = true_target.transform.position;
             target = true_target.GetComponent<NodeBridge>().FindClosestNode();
             path = AStarManager.instance.GeneratePath(currentNode, target);
         }
+    }
+
+    public void ClearPath()
+    {
+        target = null;
+        path.Clear();
     }
 }
