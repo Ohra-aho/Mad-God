@@ -15,6 +15,8 @@ public class EnemyPathFinding : MonoBehaviour
     Vector3 targetPos;
     [HideInInspector] public bool target_reached;
 
+    public bool at_the_end = false;
+
     private void Awake()
     {
         path = new List<PathNode>();
@@ -59,7 +61,10 @@ public class EnemyPathFinding : MonoBehaviour
             path.RemoveAt(x);
 
             //Target moved too far from original positon
-            if (Vector2.Distance(targetPos, true_target.transform.position) >= 2f && transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().target_in_sight)
+            if (
+                Vector2.Distance(targetPos, true_target.transform.position) >= 2f && 
+                transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().target_in_sight
+                )
             {
                 target = null;
                 path.Clear();
@@ -70,12 +75,13 @@ public class EnemyPathFinding : MonoBehaviour
             {
                 target = null;
                 moveController.StopMoving();
+                at_the_end = true;
             }
         }
        
     }
 
-    private void CreatePath()
+    public void CreatePath()
     {
         ClearPath();
 
@@ -84,6 +90,7 @@ public class EnemyPathFinding : MonoBehaviour
             targetPos = true_target.transform.position;
             target = true_target.GetComponent<NodeBridge>().FindClosestNode();
             path = AStarManager.instance.GeneratePath(currentNode, target);
+            at_the_end = false;
         }
     }
 

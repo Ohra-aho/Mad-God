@@ -144,6 +144,8 @@ MonoBehaviour:
   true_target: {fileID: 0}
   currentNode: {fileID: 0}
   path: []
+  target_reached: 0
+  at_the_end: 0
 --- !u!114 &5103891408465700744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -341,7 +343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f622aac6d504ed147a0ff1f5fe69f5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRange: 5
+  viewRange: 15
   field_of_view: 12
   nonLOS_blocker:
     serializedVersion: 2

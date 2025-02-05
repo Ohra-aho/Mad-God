@@ -73,6 +73,7 @@ public class PlayerDetector : MonoBehaviour
             Debug.DrawRay(transform.position, rotatedDirection1 * (sight1.collider != null ? sight1.distance : viewRange), Color.green);
             Debug.DrawRay(transform.position, rotatedDirection2 * (sight2.collider != null ? sight2.distance : viewRange), Color.green);
         }
+        
         target_in_sight = detected;
     }
 

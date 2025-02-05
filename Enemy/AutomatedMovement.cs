@@ -7,7 +7,7 @@ public class AutomatedMovement : MonoBehaviour
 
     public Vector2 move_direction;
     public float speed = 1f;
-    public bool immobal = false;
+    [HideInInspector] public bool immobal = false;
     Animator animator;
     GameObject visionCone;
 
@@ -18,18 +18,25 @@ public class AutomatedMovement : MonoBehaviour
         move_direction = new Vector2(0, 1);
         animator = GetComponent<Animator>();
         visionCone = transform.GetChild(0).gameObject;
-        immobal = true;
+        //immobal = true;
+    }
+
+    private void FixedUpdate()
+    {
+        ControlAnimation();
     }
 
     public void FaceTowards(PathNode target)
     {
-        if(!immobal && target != null)
+        if(target != null)
         {
             move_direction = (target.transform.position - transform.position).normalized;
             if (move_direction.x != 0)
                 facing_left = move_direction.x < 0;
         }
-        ControlAnimation(move_direction);
+        RotateVisionCone(
+                transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().player
+            );
     }
 
     public void RotateVisionCone(GameObject target)
@@ -60,7 +67,6 @@ public class AutomatedMovement : MonoBehaviour
 
     public void StopMoving()
     {
-        immobal = true;
         GetComponent<SpriteRenderer>().flipX = facing_left;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
@@ -71,31 +77,28 @@ public class AutomatedMovement : MonoBehaviour
         move_direction = Vector2.zero;
     }
 
-    private void ControlAnimation(Vector2 direction)
+    private void ControlAnimation()
     {
-        if (move_direction != Vector2.zero || GetComponent<Rigidbody2D>().velocity == Vector2.zero)
+        if (GetComponent<Rigidbody2D>().velocity == Vector2.zero)
         {
             animator.SetFloat("lastXvelocity", -move_direction.x);
             animator.SetFloat("lastYvelocity", move_direction.y);
-
-            RotateVisionCone(
-                transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>().player
-            );
-        }
-        if (immobal)
-        {
             animator.SetBool("Moving", false);
         }
+        /*if (immobal)
+        {
+            animator.SetBool("Moving", false);
+        }*/
         else if (animator.GetBool("Moving") != true)
         {
             animator.SetBool("Moving", true);
-            animator.SetFloat("xVelocity", -direction.x);
-            animator.SetFloat("yVelocity", direction.y);
+            animator.SetFloat("xVelocity", -move_direction.x);
+            animator.SetFloat("yVelocity", move_direction.y);
         }
         else
         {
-            animator.SetFloat("xVelocity", -direction.x);
-            animator.SetFloat("yVelocity", direction.y);
+            animator.SetFloat("xVelocity", -move_direction.x);
+            animator.SetFloat("yVelocity", move_direction.y);
         }
 
     }

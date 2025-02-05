@@ -10,12 +10,15 @@ public class EntityBehaviour : MonoBehaviour
 
     [HideInInspector] public bool target_available; // If there is target to move towards
     [HideInInspector] public bool aggro; // Will trigger chase is target is found
+
+    Coroutine behaviourCR;
     public enum StateMachine
     {
         Roam, // If no priority target found
         Chase, // If priority target found, chase it
         Flee, // Move away from target
-        Move_towards // Move towards set target
+        Move_towards, // Move towards set target
+        Look_around //Look ones to all directions
     }
 
     public StateMachine current_state = StateMachine.Roam;
@@ -52,22 +55,42 @@ public class EntityBehaviour : MonoBehaviour
             case StateMachine.Move_towards:
                 MoveTowards();
                 break;
+            case StateMachine.Look_around:
+                LookAround();
+                break;
         }
-        
-        if(current_state != StateMachine.Roam && !target_available)
+
+        Debug.Log(current_state);
+        // If no target found
+        if (current_state != StateMachine.Roam && !target_available)
         {
-            current_state = StateMachine.Roam;
-            path_finder.ClearPath();
-        } 
-        else if(current_state != StateMachine.Chase && target_available && aggro)
-        {
-            current_state = StateMachine.Chase;
-            path_finder.ClearPath();
+            BasicStateManagement(StateMachine.Roam);
         }
+        //If at paths end but target not reached
+        else if (current_state != StateMachine.Look_around && target_available && aggro && !sight.target_in_sight)
+        {
+            BasicStateManagement(StateMachine.Look_around);
+        }
+        // If target found
+        else if(current_state != StateMachine.Chase && target_available && aggro && sight.target_in_sight)
+        {
+            BasicStateManagement(StateMachine.Chase);
+        }
+        //If there is a target to move towards but not actively pursue
         else if (current_state != StateMachine.Move_towards && target_available && !aggro)
         {
-            current_state = StateMachine.Move_towards;
-            path_finder.ClearPath();
+            BasicStateManagement(StateMachine.Move_towards);
+        }
+
+    }
+
+    private void BasicStateManagement(StateMachine state)
+    {
+        current_state = state;
+        path_finder.ClearPath();
+        if (behaviourCR != null) { 
+            StopCoroutine(behaviourCR);
+            behaviourCR = null;
         }
     }
 
@@ -79,7 +102,6 @@ public class EntityBehaviour : MonoBehaviour
             path_finder.true_target = sight.player;
             target_available = true;
             aggro = true;
-            move_controller.immobal = false;
         }
         else
         {
@@ -103,5 +125,66 @@ public class EntityBehaviour : MonoBehaviour
 
     }
 
+    private void LookAround()
+    {
+        if(!path_finder.at_the_end)
+        {
+            path_finder.ControlPath();
+        } else
+        {
+            move_controller.StopMoving();
+            if(behaviourCR == null)
+            {
+                behaviourCR = StartCoroutine(Rotate());
+            }
+        }
+    }
+
+    IEnumerator Rotate()
+    {
+        int x = 1;
+        while(!sight.target_in_sight && x > 0)
+        {
+            move_controller.move_direction = RotateVector(move_controller.move_direction, 45f);
+            move_controller.FaceTowards(path_finder.target);
+            yield return new WaitForSeconds(1f);
+
+            move_controller.move_direction = RotateVector(move_controller.move_direction, 90f);
+            move_controller.FaceTowards(path_finder.target);
+            yield return new WaitForSeconds(1f);
+
+            move_controller.move_direction = RotateVector(move_controller.move_direction, -90f);
+            move_controller.FaceTowards(path_finder.target);
+            yield return new WaitForSeconds(1f);
+
+            move_controller.move_direction = RotateVector(move_controller.move_direction, -45f);
+            move_controller.FaceTowards(path_finder.target);
+            yield return new WaitForSeconds(1f);
+
+            move_controller.move_direction = RotateVector(move_controller.move_direction, -90f);
+            move_controller.FaceTowards(path_finder.target);
+            yield return new WaitForSeconds(1f);
+
+            move_controller.move_direction = RotateVector(move_controller.move_direction, 90f);
+            move_controller.FaceTowards(path_finder.target);
+            yield return new WaitForSeconds(1f);
+
+            x--;
+        }
+        if(!sight.target_in_sight)
+        {
+            aggro = false;
+            path_finder.true_target = null;
+            target_available = false;
+        }
+    }
+
+    Vector2 RotateVector(Vector2 v, float angleDegrees)
+    {
+        float radians = angleDegrees * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(radians);
+        float sin = Mathf.Sin(radians);
+        return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
+    }
 
 }
