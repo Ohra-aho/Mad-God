@@ -53,9 +53,7 @@ public class AutomatedMovement : MonoBehaviour
             GetComponent<Rigidbody2D>().velocity = new Vector2(move_direction.x * speed, move_direction.y * speed);
         } else
         {
-            GetComponent<SpriteRenderer>().flipX = facing_left;
-            move_direction = Vector2.zero;
-            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            StopMoving();
         }
     }
 
@@ -66,9 +64,15 @@ public class AutomatedMovement : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
     }
 
+    public void NormalizeMovement()
+    {
+        GetComponent<SpriteRenderer>().flipX = facing_left;
+        move_direction = Vector2.zero;
+    }
+
     private void ControlAnimation(Vector2 direction)
     {
-        if (move_direction != Vector2.zero)
+        if (move_direction != Vector2.zero || GetComponent<Rigidbody2D>().velocity == Vector2.zero)
         {
             animator.SetFloat("lastXvelocity", -move_direction.x);
             animator.SetFloat("lastYvelocity", move_direction.y);

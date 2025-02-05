@@ -32,7 +32,7 @@ public class PathNode : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    /*private void OnDrawGizmos()
     {
         if(available)
         {
@@ -45,7 +45,7 @@ public class PathNode : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 
     private void OnTriggerStay2D(Collider2D other)
     {

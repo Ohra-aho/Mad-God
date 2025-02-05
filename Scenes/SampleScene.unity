@@ -5787,7 +5787,7 @@ Transform:
   m_GameObject: {fileID: 502425750}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.51, y: 10.52, z: 0}
+  m_LocalPosition: {x: 12, y: 11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5911,7 +5911,7 @@ Transform:
   m_GameObject: {fileID: 502625690}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.53, y: 10.49, z: 0}
+  m_LocalPosition: {x: 15, y: 11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6080,7 +6080,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10.772809
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6304,7 +6304,7 @@ Transform:
   m_GameObject: {fileID: 704966031}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.46, y: 10.49, z: 0}
+  m_LocalPosition: {x: 11, y: 11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7151,11 +7151,11 @@ GameObject:
   - component: {fileID: 1080052866}
   - component: {fileID: 1080052865}
   - component: {fileID: 1080052867}
+  - component: {fileID: 1080052872}
   - component: {fileID: 1080052870}
   - component: {fileID: 1080052871}
   - component: {fileID: 1080052869}
   - component: {fileID: 1080052868}
-  - component: {fileID: 1080052872}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -8904,7 +8904,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a57af0e5f027879429cc3df661d13d36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entities: []
 --- !u!1 &1820809065
 GameObject:
   m_ObjectHideFlags: 0

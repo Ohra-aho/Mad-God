@@ -59,14 +59,8 @@ public class PlayerDetector : MonoBehaviour
             {
                 if (sight1.collider.GetComponent<Player>() && LOS)
                 {
-                    //entity.GetComponent<EnemyPathFinding>().player = sight1.collider.gameObject;
                     player = sight1.collider.gameObject;
                     detected = true;
-                    //break;
-                }
-                else if (!LOS)
-                {
-                    Debug.Log(sight1.collider.name);
                 }
             }
 
@@ -74,14 +68,8 @@ public class PlayerDetector : MonoBehaviour
             {
                 if (sight2.collider.GetComponent<Player>() && LOS)
                 {
-                    //entity.GetComponent<EnemyPathFinding>().player = sight2.collider.gameObject;
                     player = sight2.collider.gameObject;
                     detected = true;
-                    //break;
-                }
-                else if(!LOS)
-                {
-                    Debug.Log(sight2.collider.name);
                 }
             }
 
