@@ -88,7 +88,10 @@ public class EnemyPathFinding : MonoBehaviour
         if(true_target != null)
         {
             targetPos = true_target.transform.position;
-            target = true_target.GetComponent<NodeBridge>().FindClosestNode();
+
+            if (!true_target.GetComponent<PathNode>()) target = true_target.GetComponent<NodeBridge>().FindClosestNode();
+            else target = true_target.GetComponent<PathNode>();
+
             path = AStarManager.instance.GeneratePath(currentNode, target);
             at_the_end = false;
         }

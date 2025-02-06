@@ -11,6 +11,8 @@ public class EntityBehaviour : MonoBehaviour
     [HideInInspector] public bool target_available; // If there is target to move towards
     [HideInInspector] public bool aggro; // Will trigger chase is target is found
 
+    public GameObject home;
+
     Coroutine behaviourCR;
     public enum StateMachine
     {
@@ -60,7 +62,6 @@ public class EntityBehaviour : MonoBehaviour
                 break;
         }
 
-        Debug.Log(current_state);
         // If no target found
         if (current_state != StateMachine.Roam && !target_available)
         {
@@ -105,8 +106,16 @@ public class EntityBehaviour : MonoBehaviour
         }
         else
         {
-            //Move to randon locations
-            path_finder.ControlPath();
+            //Move to randon location
+            if(home != null)
+            {
+                if(path_finder.at_the_end || path_finder.path.Count == 0)
+                {
+                    int index = Random.Range(0, home.GetComponent<EntityHome>().home_nodes.Count);
+                    path_finder.true_target = home.GetComponent<EntityHome>().home_nodes[index].gameObject;
+                }
+                path_finder.ControlPath();
+            }
         }
     }
 
@@ -185,6 +194,19 @@ public class EntityBehaviour : MonoBehaviour
         float cos = Mathf.Cos(radians);
         float sin = Mathf.Sin(radians);
         return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
+    }
+
+    private void RecognizeHome(GameObject obj)
+    {
+        if (home == null && obj.GetComponent<EntityHome>())
+        {
+            home = obj;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        RecognizeHome(collision.gameObject);
     }
 
 }
