@@ -61,34 +61,34 @@ public class EntityBehaviour : MonoBehaviour
                 LookAround();
                 break;
         }
-
+        Debug.Log(current_state);
         // If no target found
         if (current_state != StateMachine.Roam && !target_available)
         {
-            BasicStateManagement(StateMachine.Roam);
+            BasicStateManagement(StateMachine.Roam, true);
         }
         //If at paths end but target not reached
         else if (current_state != StateMachine.Look_around && target_available && aggro && !sight.target_in_sight)
         {
-            BasicStateManagement(StateMachine.Look_around);
+            BasicStateManagement(StateMachine.Look_around, false);
         }
         // If target found
         else if(current_state != StateMachine.Chase && target_available && aggro && sight.target_in_sight)
         {
-            BasicStateManagement(StateMachine.Chase);
+            BasicStateManagement(StateMachine.Chase, true);
         }
         //If there is a target to move towards but not actively pursue
         else if (current_state != StateMachine.Move_towards && target_available && !aggro)
         {
-            BasicStateManagement(StateMachine.Move_towards);
+            BasicStateManagement(StateMachine.Move_towards, true);
         }
 
     }
 
-    private void BasicStateManagement(StateMachine state)
+    private void BasicStateManagement(StateMachine state, bool clear_path)
     {
         current_state = state;
-        path_finder.ClearPath();
+        if(clear_path) path_finder.ClearPath();
         if (behaviourCR != null) { 
             StopCoroutine(behaviourCR);
             behaviourCR = null;

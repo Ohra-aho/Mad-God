@@ -13,6 +13,8 @@ public class PlayerDetector : MonoBehaviour
 
     [HideInInspector] public GameObject player;
 
+    int delay = 0;
+
 
     private void Awake()
     {
@@ -73,8 +75,18 @@ public class PlayerDetector : MonoBehaviour
             Debug.DrawRay(transform.position, rotatedDirection1 * (sight1.collider != null ? sight1.distance : viewRange), Color.green);
             Debug.DrawRay(transform.position, rotatedDirection2 * (sight2.collider != null ? sight2.distance : viewRange), Color.green);
         }
-        
-        target_in_sight = detected;
+
+        //Prevents rapid changing from in line of sight to out of line of sight
+        if(target_in_sight && !detected)
+        {
+            if(delay == 0) delay = 60;
+            delay--;
+        } else if(!target_in_sight && detected)
+        {
+            delay = 0;
+        }
+
+        if(delay == 0) target_in_sight = detected;
     }
 
     //Selvitä miten toimii
@@ -85,6 +97,8 @@ public class PlayerDetector : MonoBehaviour
         float sin = Mathf.Sin(radians);
         return new Vector2(v.x * cos - v.y * sin, v.x * sin + v.y * cos);
     }
+
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {  
