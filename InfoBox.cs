@@ -18,6 +18,27 @@ public class InfoBox : MonoBehaviour
 
     public GameObject button;
 
+    public List<Message> incomming_messages = new List<Message>();
+
+    //Displays info box and eventuallu shows event description. All further functionalities start from here
+    public void SetText(GameObject trigger)
+    {
+        title = incomming_messages[0].Title;
+        description = incomming_messages[0].Content;
+        if (eventTrigger != trigger) eventTrigger = trigger;
+        incomming_messages.RemoveAt(0);
+
+        transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "";
+        transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+
+        ClearChoiseList();
+        transform.GetChild(2).gameObject.SetActive(false);
+
+        if (textDisplay != null) StopCoroutine(textDisplay);
+        textDisplay = DisplayText(title, description);
+        StartCoroutine(textDisplay);
+    }
+
     private IEnumerator DisplayText(string displayTitle, string displayDescription)
     {
         displayInProcess = true;
@@ -33,24 +54,6 @@ public class InfoBox : MonoBehaviour
         displayInProcess = false;
     }
 
-    //Displays info box and eventuallu shows event description. All further functionalities start from here
-    public void SetText(string displayTitle, string displayDescription, GameObject trigger)
-    {
-        title = displayTitle;
-        description = displayDescription;
-        eventTrigger = trigger;
-
-        transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "";
-        transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-
-        ClearChoiseList();
-        transform.GetChild(2).gameObject.SetActive(false);
-
-        if (textDisplay != null) StopCoroutine(textDisplay);
-        textDisplay = DisplayText(displayTitle, displayDescription);
-        StartCoroutine(textDisplay);
-    }
-
     public void StopTextDisplay()
     {
         if(displayInProcess)
@@ -61,11 +64,24 @@ public class InfoBox : MonoBehaviour
             displayInProcess = false;
         } else
         {
-            player = GameObject.Find("Player").GetComponent<Controls>();
-            player.immobal = false;
-            ClearChoiseList();
-            transform.GetChild(2).gameObject.SetActive(false);
-            this.gameObject.SetActive(false);
+            if(incomming_messages.Count == 0)
+            {
+                player = GameObject.Find("Player").GetComponent<Controls>();
+                player.immobal = false;
+                ClearChoiseList();
+                transform.GetChild(2).gameObject.SetActive(false);
+
+                // At the end of first interaction, invoke initial interaction
+                if (eventTrigger.GetComponent<Interactable>())
+                    if(eventTrigger.GetComponent<Interactable>().initial_interaction != null) 
+                        eventTrigger.GetComponent<Interactable>().InitialInteraction();
+
+                this.gameObject.SetActive(false);
+            } else
+            {
+                //If more messages, set another one
+                SetText(eventTrigger);
+            }
         }
     }
 
@@ -103,5 +119,18 @@ public class InfoBox : MonoBehaviour
         ClearChoiseList();
         transform.GetChild(2).gameObject.SetActive(false);
         this.gameObject.SetActive(false);
+    }
+
+    public void AddMessage(string title, string content)
+    {
+        incomming_messages.Add(
+            new Message() { Title = title, Content = content }
+        );
+    }
+
+    public class Message
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
     }
 }

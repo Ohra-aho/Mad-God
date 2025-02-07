@@ -41,7 +41,7 @@ public class Controls : MonoBehaviour
         move_direction = new Vector2(0, -1);
         DefaultUI = GameObject.Find("Default UI");
         animator = GetComponent<Animator>();
-        StartCoroutine(DirectiorBuffer());
+        StartCoroutine(DirectionBuffer());
     }
 
     // Update is called once per frame
@@ -65,7 +65,7 @@ public class Controls : MonoBehaviour
         }
     }
 
-    private IEnumerator DirectiorBuffer()
+    private IEnumerator DirectionBuffer()
     {
         while(true)
         {
@@ -114,28 +114,29 @@ public class Controls : MonoBehaviour
         {
             immobal = true;
             DisplayInteractInfo(
-                GetComponent<Player>().interact_target
+                GetComponent<Player>().interact_target.GetComponent<Interactable>()
             );
         }
     }
 
-    private void DisplayInteractInfo(GameObject info)
+    private void DisplayInteractInfo(Interactable info)
     {
-        GameObject infoBox;
+        InfoBox infoBox;
 
         if (DefaultUI.transform.GetChild(0).gameObject.activeInHierarchy)
         {
-            infoBox = DefaultUI.transform.GetChild(0).gameObject;
-            infoBox.GetComponent<InfoBox>().StopTextDisplay();
-        } else
+            infoBox = DefaultUI.transform.GetChild(0).gameObject.GetComponent<InfoBox>();
+            infoBox.StopTextDisplay();
+        }
+        else
         {
             DefaultUI.transform.GetChild(0).gameObject.SetActive(true);
-            infoBox = DefaultUI.transform.GetChild(0).gameObject;
+            infoBox = DefaultUI.transform.GetChild(0).gameObject.GetComponent<InfoBox>();
 
-            infoBox.GetComponent<InfoBox>().SetText(
-                info.GetComponent<Interactable>().name,
-                info.GetComponent<Interactable>().description,
-                info
+            infoBox.incomming_messages.AddRange(info.messages);
+
+            infoBox.SetText(
+                info.gameObject
             );
         }
 

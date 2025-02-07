@@ -17,6 +17,7 @@ public class WierdOrgan : MonoBehaviour
         GetComponent<ChoiseEvent>().AddTitles(new List<string> { "Touch it", "Smash it", "Leave it be" });
         GetComponent<Interactable>().name = name;
         GetComponent<Interactable>().description = description;
+        GetComponent<Interactable>().Inisiate();
 
         infoBox = GameObject.Find("Default UI").transform.GetChild(0).GetComponent<InfoBox>();
 
@@ -25,18 +26,12 @@ public class WierdOrgan : MonoBehaviour
     {
         if(smashed)
         {
-            infoBox.SetText(
-                name,
-                "Warm yellow liquid stains your fingers. It feels stiky and irritates your skin.",
-                this.gameObject
-            );
+            infoBox.AddMessage(name, "Warm yellow liquid stains your fingers. It feels stiky and irritates your skin.");
+            infoBox.SetText(this.gameObject);
         } else
         {
-            infoBox.SetText(
-                name,
-                "Organ feels warm and dense. Something seemes to be flowing through it.",
-                this.gameObject
-            );
+            infoBox.AddMessage(name, "Organ feels warm and dense. Something seemes to be flowing through it.");
+            infoBox.SetText(this.gameObject);
         }
         
     }
@@ -55,11 +50,8 @@ public class WierdOrgan : MonoBehaviour
         name = GetComponent<Interactable>().name;
         description = GetComponent<Interactable>().description;
 
-        infoBox.SetText(
-            name,
-            "You smash the organ and a lot of yellowish liquid spurts from it.",
-            this.gameObject
-        );
+        infoBox.AddMessage(name, "You smash the organ and a lot of yellowish liquid spurts from it.");
+        infoBox.SetText(this.gameObject);
        
     }
 
