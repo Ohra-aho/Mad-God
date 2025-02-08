@@ -5,27 +5,15 @@ using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {
-    public string name;
-    public string description;
+    [HideInInspector] public string name;
+    [HideInInspector] public string description;
 
     public List<InfoBox.Message> messages = new List<InfoBox.Message>();
 
     public List<Item> items;
     bool interacted = false;
 
-    public UnityAction initial_interaction;
-
-    private void Start()
-    {
-        //items = new List<Item>(); for now
-
-    }
-
-    private void Awake()
-    {
-        
-        
-    }
+    [HideInInspector] public UnityAction initial_interaction;
 
     public void Inisiate()
     {

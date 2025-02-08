@@ -64,18 +64,19 @@ public class InfoBox : MonoBehaviour
             displayInProcess = false;
         } else
         {
+            //If all messages are displayed, close message window and call InitialInteraction
             if(incomming_messages.Count == 0)
             {
                 player = GameObject.Find("Player").GetComponent<Controls>();
                 player.immobal = false;
                 ClearChoiseList();
-                transform.GetChild(2).gameObject.SetActive(false);
 
                 // At the end of first interaction, invoke initial interaction
                 if (eventTrigger.GetComponent<Interactable>())
-                    if(eventTrigger.GetComponent<Interactable>().initial_interaction != null) 
+                    if (eventTrigger.GetComponent<Interactable>().initial_interaction != null)
                         eventTrigger.GetComponent<Interactable>().InitialInteraction();
 
+                transform.GetChild(2).gameObject.SetActive(false);
                 this.gameObject.SetActive(false);
             } else
             {

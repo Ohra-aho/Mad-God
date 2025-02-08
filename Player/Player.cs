@@ -12,13 +12,4 @@ public class Player : MonoBehaviour
     {
         items = new List<Item>();
     }
-
-    /*public void PickUpItem()
-    {
-        if(interact_target.GetComponent<Interactable>().items != null)
-        {
-            items.AddRange(interact_target.GetComponent<Interactable>().items);
-            interact_target.GetComponent<Interactable>().items.Clear();
-        }   
-    }*/
 }
