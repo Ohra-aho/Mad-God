@@ -29,7 +29,7 @@ public class ScrollView : MonoBehaviour
         for (int i = 0; i < content.Count; i++)
         {
             GameObject new_item = Instantiate(prefab, scroll.transform);
-            new_item.name = content[i].name;
+            new_item.GetComponent<MenuItem>().item = content[i];
         }
         AdjustScrollSize();
     }

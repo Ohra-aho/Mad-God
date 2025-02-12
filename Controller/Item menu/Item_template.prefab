@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1369980609822562350}
   - component: {fileID: 2320550124579351263}
   - component: {fileID: 8656448040480601286}
+  - component: {fileID: 6016194859686419281}
   m_Layer: 5
   m_Name: Item_template
   m_TagString: Untagged
@@ -119,4 +120,30 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2320550124579351263}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6016194859686419281}
+        m_TargetAssemblyTypeName: MenuItem, Assembly-CSharp
+        m_MethodName: DisplayInfo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6016194859686419281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9185925695610535137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c0f630cdeabb68408f56d99e059c0f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 0}
+  button: {fileID: 763538275391679017, guid: cc8698e9879c9ff47af738a82aeb1223, type: 3}
