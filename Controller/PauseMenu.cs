@@ -6,6 +6,16 @@ using TMPro;
 public class PauseMenu : MonoBehaviour
 {
     GameObject true_menu;
+
+    private void Start()
+    {
+        transform.GetChild(0).GetChild(5).gameObject.SetActive(false);
+        transform.GetChild(0).GetChild(4).gameObject.SetActive(false);
+        transform.GetChild(0).GetChild(3).gameObject.SetActive(true);
+        transform.GetChild(0).gameObject.SetActive(false);
+
+    }
+
     public void DisplayMenu()
     {
         transform.GetChild(0).gameObject.SetActive(!transform.GetChild(0).gameObject.activeInHierarchy);
