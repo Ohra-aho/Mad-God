@@ -7,6 +7,7 @@ public class EntityBehaviour : MonoBehaviour
     EnemyPathFinding path_finder;
     PlayerDetector sight;
     AutomatedMovement move_controller;
+    Controller controller;
 
     [HideInInspector] public bool target_available; // If there is target to move towards
     [HideInInspector] public bool aggro; // Will trigger chase is target is found
@@ -31,6 +32,7 @@ public class EntityBehaviour : MonoBehaviour
         path_finder = GetComponent<EnemyPathFinding>();
         sight = transform.GetChild(0).GetChild(0).GetComponent<PlayerDetector>();
         move_controller = GetComponent<AutomatedMovement>();
+        controller = GameObject.Find("Controller").GetComponent<Controller>();
     }
 
     // Update is called once per frame
@@ -41,7 +43,7 @@ public class EntityBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        ControlBehaviour();
+        if(!controller.stop) ControlBehaviour();
     }
 
     private void ControlBehaviour()
@@ -61,7 +63,7 @@ public class EntityBehaviour : MonoBehaviour
                 LookAround();
                 break;
         }
-        Debug.Log(current_state);
+
         // If no target found
         if (current_state != StateMachine.Roam && !target_available)
         {

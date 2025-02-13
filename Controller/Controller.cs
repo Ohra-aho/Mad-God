@@ -7,6 +7,8 @@ public class Controller : MonoBehaviour
 {
     public InputAction open_menu;
     PauseMenu pause_menu;
+    
+    public bool stop = false;
 
     public void OnEnable()
     {
@@ -20,12 +22,21 @@ public class Controller : MonoBehaviour
         open_menu.performed -= OnEPressed;
     }
 
+    private void Start()
+    {
+        pause_menu = GameObject.Find("Pause Menu").GetComponent<PauseMenu>();
+
+    }
+
     private void OnEPressed(InputAction.CallbackContext context)
     {
-            
-        pause_menu = GameObject.Find("Pause Menu").GetComponent<PauseMenu>();
         if (Time.timeScale > 0) Time.timeScale = 0;
         else Time.timeScale = 1;
         pause_menu.DisplayMenu();
+    }
+
+    public void ToggleStop()
+    {
+        stop = !stop;
     }
 }

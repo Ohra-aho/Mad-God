@@ -22,6 +22,8 @@ public class Controls : MonoBehaviour
 
     bool facing_left;
 
+    Controller controller;
+
     public void OnEnable()
     {
         movement.Enable();
@@ -41,27 +43,37 @@ public class Controls : MonoBehaviour
         move_direction = new Vector2(0, -1);
         DefaultUI = GameObject.Find("Default UI");
         animator = GetComponent<Animator>();
+        controller = GameObject.Find("Controller").GetComponent<Controller>();
         StartCoroutine(DirectionBuffer());
     }
 
     // Update is called once per frame
     void Update()
     {
-        move_direction = movement.ReadValue<Vector2>();
-        if (move_direction.x != 0)
+        if(!controller.stop)
         {
-            facing_left = move_direction.x < 0;
+            move_direction = movement.ReadValue<Vector2>();
+            if (move_direction.x != 0)
+            {
+                facing_left = move_direction.x < 0;
+            }
+
+            ControlAnimation(move_direction);
         }
-        
-        ControlAnimation(move_direction);
     }
 
     private void FixedUpdate()
     {
-        if(!immobal)
+        if(!controller.stop)
         {
-            GetComponent<SpriteRenderer>().flipX = facing_left;
-            GetComponent<Rigidbody2D>().velocity = new Vector2(move_direction.x * speed, move_direction.y * speed);
+            if (!immobal)
+            {
+                GetComponent<SpriteRenderer>().flipX = facing_left;
+                GetComponent<Rigidbody2D>().velocity = new Vector2(move_direction.x * speed, move_direction.y * speed);
+            }
+        } else
+        {
+            GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         }
     }
 
@@ -75,7 +87,6 @@ public class Controls : MonoBehaviour
                 animator.SetFloat("lastXvelocity", -move_direction.x);
                 animator.SetFloat("lastYvelocity", move_direction.y);
                 
-
                 float angle = Mathf.Atan2(move_direction.y, move_direction.x) * Mathf.Rad2Deg;
                 transform.GetChild(0).rotation = Quaternion.Euler(0, 0, angle - 90); // Adjust if sprite faces right
             } else
@@ -105,7 +116,7 @@ public class Controls : MonoBehaviour
 
     private void OnSpacePressed(InputAction.CallbackContext context)
     {
-        Interact();
+        if(!controller.stop) Interact();
     }
     public void Interact()
     {

@@ -10,6 +10,7 @@ public class AutomatedMovement : MonoBehaviour
     [HideInInspector] public bool immobal = false;
     Animator animator;
     GameObject visionCone;
+    Controller controller;
 
     bool facing_left;
 
@@ -18,7 +19,7 @@ public class AutomatedMovement : MonoBehaviour
         move_direction = new Vector2(0, 1);
         animator = GetComponent<Animator>();
         visionCone = transform.GetChild(0).gameObject;
-        //immobal = true;
+        controller = GameObject.Find("Controller").GetComponent<Controller>();
     }
 
     private void FixedUpdate()
@@ -79,27 +80,29 @@ public class AutomatedMovement : MonoBehaviour
 
     private void ControlAnimation()
     {
-        if (GetComponent<Rigidbody2D>().velocity == Vector2.zero)
+        if(!controller.stop)
         {
-            animator.SetFloat("lastXvelocity", -move_direction.x);
-            animator.SetFloat("lastYvelocity", move_direction.y);
-            animator.SetBool("Moving", false);
+            if(animator.speed != 1) animator.speed = 1;
+            if (GetComponent<Rigidbody2D>().velocity == Vector2.zero)
+            {
+                animator.SetFloat("lastXvelocity", -move_direction.x);
+                animator.SetFloat("lastYvelocity", move_direction.y);
+                animator.SetBool("Moving", false);
+            }
+            else if (animator.GetBool("Moving") != true)
+            {
+                animator.SetBool("Moving", true);
+                animator.SetFloat("xVelocity", -move_direction.x);
+                animator.SetFloat("yVelocity", move_direction.y);
+            }
+            else
+            {
+                animator.SetFloat("xVelocity", -move_direction.x);
+                animator.SetFloat("yVelocity", move_direction.y);
+            }
+        } else
+        {
+            animator.speed = 0;
         }
-        /*if (immobal)
-        {
-            animator.SetBool("Moving", false);
-        }*/
-        else if (animator.GetBool("Moving") != true)
-        {
-            animator.SetBool("Moving", true);
-            animator.SetFloat("xVelocity", -move_direction.x);
-            animator.SetFloat("yVelocity", move_direction.y);
-        }
-        else
-        {
-            animator.SetFloat("xVelocity", -move_direction.x);
-            animator.SetFloat("yVelocity", move_direction.y);
-        }
-
     }
 }
