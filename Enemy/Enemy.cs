@@ -20,5 +20,6 @@ public class Enemy : MonoBehaviour
         GameObject.Find("Controller").GetComponent<Controller>().stop = true;
         GameObject battle_menu = GameObject.Find("Battle Menu");
         battle_menu.transform.GetChild(0).gameObject.SetActive(true);
+        battle_menu.GetComponent<BattleMenu>().SetActions();
     }
 }

@@ -15,8 +15,8 @@ public class Item : MonoBehaviour
 
     public void GiveData(string item_name, string item_description, List<string> names, List<Use> use)
     {
-        uses.AddRange(use);
-        use_names.AddRange(names);
+        if(use != null)  uses.AddRange(use);
+        if(names != null) use_names.AddRange(names);
         uses.Add(Drop);
         use_names.Add("Drop");
         name = item_name;
