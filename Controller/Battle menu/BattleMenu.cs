@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class BattleMenu : MonoBehaviour
 {
@@ -9,6 +11,12 @@ public class BattleMenu : MonoBehaviour
     private void Start()
     {
         transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    public void Initiate()
+    {
+        SetActions();
+        SetPlayerInfo();
     }
 
     public void SetActions()
@@ -36,5 +44,14 @@ public class BattleMenu : MonoBehaviour
         //if (player.right_leg != null) main_choise_panel.GetChild(3).gameObject.GetComponent<ChoiseBlock>().DisplayActions(player.right_leg.GetComponent<Weapon>().actions);
         //if (player.left_leg != null) main_choise_panel.GetChild(4).gameObject.GetComponent<ChoiseBlock>().DisplayActions(player.left_leg.GetComponent<Weapon>().actions);
 
+    }
+
+    public void SetPlayerInfo()
+    {
+        player = GameObject.Find("Player").GetComponent<Player>();
+        Transform character = transform.GetChild(0).GetChild(2);
+        character.GetChild(0).GetComponent<Image>().sprite = player.battle_sprite;
+        character.GetChild(1).GetComponent<TextMeshProUGUI>().text = "HP: " + player.HP;
+        character.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Focus: " + player.focus;
     }
 }
