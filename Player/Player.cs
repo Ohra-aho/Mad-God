@@ -9,6 +9,8 @@ public class Player : MonoBehaviour
 
     public List<Item> items;
 
+    [HideInInspector] public int Max_HP = 100;
+    [HideInInspector] public int max_focus = 5;
     [HideInInspector] public int HP = 100;
     [HideInInspector] public int focus = 5;
 

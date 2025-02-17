@@ -188,6 +188,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d1e2d5eb43b6640b5e6bd4a92e11c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HP: 50
+  battle_enemy: {fileID: 8250898647728347352, guid: 6ce9345e9b388654fb7da43163df1d36, type: 3}
   on_cooldown: 0
 --- !u!50 &8604079930310534059
 Rigidbody2D:

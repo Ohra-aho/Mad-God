@@ -24,7 +24,12 @@ public class Action : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             btn.onClick.RemoveAllListeners();
             if (action != null)
             {
-                btn.onClick.AddListener(() => action.Invoke());
+                btn.onClick.AddListener(
+                    () => {
+                        action.Invoke();
+                    }
+
+                );
             }
         }
         else
@@ -32,6 +37,8 @@ public class Action : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             Debug.LogError("Not an attack");
         }
     }
+
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {

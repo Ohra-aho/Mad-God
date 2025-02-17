@@ -5,6 +5,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [HideInInspector] public int HP = 50;
+    public GameObject battle_enemy;
 
     public bool on_cooldown = false;
     private void OnTriggerEnter2D(Collider2D collision)
@@ -22,6 +23,7 @@ public class Enemy : MonoBehaviour
         GameObject.Find("Controller").GetComponent<Controller>().stop = true;
         GameObject battle_menu = GameObject.Find("Battle Menu");
         battle_menu.transform.GetChild(0).gameObject.SetActive(true);
+        battle_menu.GetComponent<BattleMenu>().enemies.Add(battle_enemy);
         battle_menu.GetComponent<BattleMenu>().Initiate();
     }
 }

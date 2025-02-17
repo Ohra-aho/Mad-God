@@ -8,6 +8,7 @@ public class BattleMenu : MonoBehaviour
 {
     [SerializeField] GameObject button;
     Player player;
+    public List<GameObject> enemies;
     private void Start()
     {
         transform.GetChild(0).gameObject.SetActive(false);
@@ -17,6 +18,7 @@ public class BattleMenu : MonoBehaviour
     {
         SetActions();
         SetPlayerInfo();
+        DisplayEnemies();
     }
 
     public void SetActions()
@@ -49,9 +51,18 @@ public class BattleMenu : MonoBehaviour
     public void SetPlayerInfo()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
-        Transform character = transform.GetChild(0).GetChild(2);
+        Transform character = transform.GetChild(0).GetChild(3);
         character.GetChild(0).GetComponent<Image>().sprite = player.battle_sprite;
         character.GetChild(1).GetComponent<TextMeshProUGUI>().text = "HP: " + player.HP;
         character.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Focus: " + player.focus;
+    }
+
+    public void DisplayEnemies()
+    {
+        Transform enemy_holder = transform.GetChild(0).GetChild(4);
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            GameObject new_enemy = Instantiate(enemies[i], enemy_holder.GetChild(i));
+        }
     }
 }
