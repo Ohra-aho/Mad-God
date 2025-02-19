@@ -5,6 +5,8 @@ using TMPro;
 
 public class ChoiseStatDisplay : MonoBehaviour
 {
+    public BattleMenu battle_menu;
+
     public int damage;
     public int defence;
     public int spent_focus;
@@ -12,6 +14,7 @@ public class ChoiseStatDisplay : MonoBehaviour
     {
         damage = 0;
         defence = 0;
+        spent_focus = 0;
         DisplayStats();
     }
 
@@ -40,5 +43,7 @@ public class ChoiseStatDisplay : MonoBehaviour
     public void Confirm()
     {
         Debug.Log("Confirmed");
+        ResetStats();
+        battle_menu.player_turn = false;
     }
 }

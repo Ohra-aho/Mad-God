@@ -9,9 +9,32 @@ public class BattleMenu : MonoBehaviour
     [SerializeField] GameObject button;
     Player player;
     public List<GameObject> enemies;
+
+    public GameObject enemy_holder;
+
+    public bool player_turn = true;
     private void Start()
     {
         transform.GetChild(0).gameObject.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if(player_turn)
+        {
+            //Nothing really
+        } else
+        {
+            //Some enemy behaviour shit
+            for(int i = 0; i < enemy_holder.transform.childCount; i++)
+            {
+                if(enemy_holder.transform.GetChild(i).childCount > 0)
+                {
+                    enemy_holder.transform.GetChild(i).GetChild(0).GetComponent<BattleEnemy>().TakeATurn();
+                }
+            }
+            player_turn = true;
+        }
     }
 
     public void Initiate()
